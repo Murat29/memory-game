@@ -1,14 +1,19 @@
 import React from 'react';
 import { nanoid } from 'nanoid';
 import { connect } from 'react-redux';
-import { startGame } from '../../redux/actions';
+import { startGame, upDataPastime } from '../../redux/actions';
 import { emojiArray } from '../../utils/constants';
+import { msToTime } from '../../utils/msToTime';
 import Card from '../Card/Card';
 import './App.css';
 
-function App({ cards, startGame, disabled, pastTime }) {
+function App({ cards, startGame, disabled, pastTime, upDataPastime }) {
   function start() {
     startGame(getArrayToDraw(emojiArray));
+    const startDate = new Date();
+    setInterval(() => {
+      upDataPastime(new Date() - startDate);
+    }, 1000);
   }
 
   function getArrayToDraw(arr) {
@@ -46,7 +51,7 @@ function App({ cards, startGame, disabled, pastTime }) {
         <button onClick={start} className="app__btn-start">
           Старт
         </button>
-        <p className="app__timer">Таймер: {pastTime}</p>
+        <p className="app__timer">Таймер: {msToTime(pastTime)}</p>
       </div>
     </div>
   );
@@ -57,11 +62,12 @@ const mapStateToProps = (state) => ({
   verifiableСards: state.cards.verifiableСards,
   numberOfCoincidences: state.cards.numberOfCoincidences,
   disabled: state.cards.disabled,
-  pastTime: state.cards.pastTime,
+  pastTime: state.timer.pastTime,
 });
 
 const mapDispatchToProps = {
   startGame,
+  upDataPastime,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

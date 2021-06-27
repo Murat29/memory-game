@@ -7,7 +7,6 @@ const initState = {
   verifiableСards: [],
   numberOfCoincidences: 0,
   disabled: true,
-  pastTime: '0',
 };
 
 export const cardsReducer = (state = initState, action) => {
