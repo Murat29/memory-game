@@ -1,10 +1,25 @@
-import './App.css';
+import React from 'react';
+import { nanoid } from 'nanoid';
+import { connect } from 'react-redux';
+import { startGame } from '../../redux/actions';
 import { emojiArray } from '../../utils/constants';
 import Card from '../Card/Card';
-function App() {
-  function getDoubleShuffleArray(arr) {
-    const doubledArray = arr.concat(arr);
+import './App.css';
+
+function App({ cards, startGame, disabled, pastTime }) {
+  function start() {
+    startGame(getArrayToDraw(emojiArray));
+  }
+
+  function getArrayToDraw(arr) {
+    const doubledArray = arr.concat(arr).map((value) => ({
+      value,
+      disabled: false,
+      // Создаем унакальные ключю, иначе карточки не будут перерендериться
+      key: nanoid(),
+    }));
     let j, temp;
+    // перемешиваем массив в случайном порядке
     for (let i = doubledArray.length - 1; i > 0; i--) {
       j = Math.floor(Math.random() * (i + 1));
       temp = doubledArray[j];
@@ -13,21 +28,40 @@ function App() {
     }
     return doubledArray;
   }
+
   return (
     <div className="app">
       <form className="app__form">
         <fieldset className="app__fieldset">
-          {getDoubleShuffleArray(emojiArray).map((el, i) => (
-            <Card key={i} value={el} />
+          {cards.map((dataCard, i) => (
+            <Card
+              key={dataCard?.key || i}
+              value={dataCard?.value || ''}
+              disabled={dataCard?.disabled || disabled || false}
+            />
           ))}
         </fieldset>
       </form>
       <div className="app__menu">
-        <button className="app__btn-start">Старт</button>
-        <p className="app__timer">4:20</p>
+        <button onClick={start} className="app__btn-start">
+          Старт
+        </button>
+        <p className="app__timer">Таймер: {pastTime}</p>
       </div>
     </div>
   );
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+  cards: state.cards.cards,
+  verifiableСards: state.cards.verifiableСards,
+  numberOfCoincidences: state.cards.numberOfCoincidences,
+  disabled: state.cards.disabled,
+  pastTime: state.cards.pastTime,
+});
+
+const mapDispatchToProps = {
+  startGame,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
