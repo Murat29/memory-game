@@ -1,14 +1,13 @@
 import React from 'react';
 import './Card.css';
-function Card({ value, disabled }) {
-  const [isFlip, setIsFlip] = React.useState(false);
-
-  function handleClick(e) {
-    e.preventDefault();
-    setIsFlip(!isFlip);
-  }
+function Card({ value, disabled, index, handleCardClick, show }) {
   return (
-    <button disabled={disabled} onClick={handleClick} className={`card ${isFlip && 'card_flip'}`}>
+    <button
+      type="button"
+      disabled={disabled}
+      onClick={() => handleCardClick(value, index)}
+      className={`card ${show && 'card_flip'}`}
+    >
       <div className="card__shirt" />
       <div className="card__face">{value}</div>
     </button>
