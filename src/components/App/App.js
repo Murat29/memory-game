@@ -17,6 +17,7 @@ import {
 import { emojiArray } from '../../utils/constants';
 import { msToTime } from '../../utils/msToTime';
 import Card from '../Card/Card';
+import Button from '../Button/Button';
 import ResultPopup from '../ResultPopup/ResultPopup';
 import WinPopup from '../WinPopup/WinPopup';
 import './App.css';
@@ -42,7 +43,7 @@ function App({
   const [intervalTime, setIntervalTime] = React.useState(null);
   const [cardHideTimer, setCardHideTimer] = React.useState(null);
 
-  function start() {
+  function startGame() {
     updataCards(getArrayToDraw(emojiArray));
     enableAllCards();
     clearInterval(intervalTime);
@@ -125,13 +126,9 @@ function App({
         ))}
       </div>
       <div className="app__menu">
-        <button onClick={start} className="app__btn">
-          Старт
-        </button>
+        <Button onClick={startGame} title="Старт" />
         <p className="app__timer">Таймер: {msToTime(pastTime)}</p>
-        <button onClick={() => openResultPopup()} className="app__btn">
-          Таблица результатов
-        </button>
+        <Button onClick={() => openResultPopup()} title="Таблица результатов" />
       </div>
       <ResultPopup />
       <WinPopup />

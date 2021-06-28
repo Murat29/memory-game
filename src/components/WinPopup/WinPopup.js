@@ -1,9 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Popup from '../Popup/Popup';
-import './WinPopup.css';
+import Button from '../Button/Button';
 import { closeWinPopup, addToResults, openResultPopup } from '../../redux/actions';
 import { msToTime } from '../../utils/msToTime';
+import './WinPopup.css';
 
 function WinPopup({ isOpenWinPopup, closeWinPopup, pastTime, addToResults, openResultPopup }) {
   const [name, setName] = React.useState('');
@@ -24,10 +25,9 @@ function WinPopup({ isOpenWinPopup, closeWinPopup, pastTime, addToResults, openR
         onChange={(e) => setName(e.target.value)}
         className="popup__input"
         placeholder="Введите свое имя"
+        maxLength="15"
       />
-      <button onClick={handleClick} className="popup__btn">
-        Добавить в таблицу
-      </button>
+      <Button title="Добавить в таблицу" onClick={handleClick} isSmallTitle={true} />
     </Popup>
   );
 }
