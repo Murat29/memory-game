@@ -2,7 +2,7 @@ import React from 'react';
 import { nanoid } from 'nanoid';
 import { connect } from 'react-redux';
 import {
-  startGame,
+  updataCards,
   updataPastime,
   updataVerifiableCard,
   showCards,
@@ -19,7 +19,7 @@ import './App.css';
 
 function App({
   cards,
-  startGame,
+  updataCards,
   disabled,
   pastTime,
   verifiableСard,
@@ -34,9 +34,11 @@ function App({
   increaseNumberMatches,
 }) {
   const [intervalTime, setIntervalTime] = React.useState(null);
+  const [cardHideTimer, setCardHideTimer] = React.useState(null);
 
   function start() {
-    startGame(getArrayToDraw(emojiArray));
+    updataCards(getArrayToDraw(emojiArray));
+    enableAllCards();
     clearInterval(intervalTime);
     updataPastime(0);
     const startDate = new Date();
@@ -66,6 +68,7 @@ function App({
   }
 
   function handleCardClick(value, index) {
+    clearTimeout(cardHideTimer);
     showCards(index);
     // Если открываем вторую карточку
     if (verifiableСard) {
@@ -92,25 +95,28 @@ function App({
     // Если открываем первую карточку
     else {
       updataVerifiableCard({ value, index });
+      const newCardHideTimer = setTimeout(() => {
+        updataVerifiableCard(null);
+        hideCards(index);
+      }, 5000);
+      setCardHideTimer(newCardHideTimer);
     }
   }
 
   return (
     <div className="app">
-      <form className="app__form">
-        <fieldset className="app__fieldset">
-          {cards.map((dataCard, i) => (
-            <Card
-              key={dataCard?.key || i}
-              index={i}
-              value={dataCard?.value || ''}
-              disabled={dataCard?.disabled || disabled || false}
-              show={dataCard?.show || false}
-              handleCardClick={handleCardClick}
-            />
-          ))}
-        </fieldset>
-      </form>
+      <div className="app__cards-container">
+        {cards.map((dataCard, i) => (
+          <Card
+            key={dataCard?.key || i}
+            index={i}
+            value={dataCard?.value || ''}
+            disabled={dataCard?.disabled || disabled || false}
+            show={dataCard?.show || false}
+            handleCardClick={handleCardClick}
+          />
+        ))}
+      </div>
       <div className="app__menu">
         <button onClick={start} className="app__btn-start">
           Старт
@@ -123,14 +129,14 @@ function App({
 
 const mapStateToProps = (state) => ({
   cards: state.cards.cards,
-  verifiableСard: state.cards.verifiableСard,
-  numberMatches: state.cards.numberMatches,
-  disabled: state.cards.disabled,
-  pastTime: state.timer.pastTime,
+  verifiableСard: state.gameParams.verifiableСard,
+  numberMatches: state.gameParams.numberMatches,
+  disabled: state.app.disabled,
+  pastTime: state.app.pastTime,
 });
 
 const mapDispatchToProps = {
-  startGame,
+  updataCards,
   updataPastime,
   updataVerifiableCard,
   showCards,

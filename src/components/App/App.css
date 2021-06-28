@@ -10,17 +10,11 @@
   margin: 0 auto;
 }
 
-.app__form {
+.app__cards-container {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: 20px;
   width: 100%;
-}
-
-.app__fieldset {
-  display: contents;
-  margin: 0 auto;
-  padding: 0;
 }
 
 .app__menu {

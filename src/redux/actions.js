@@ -5,14 +5,14 @@ import {
   HIDE_CARDS,
   INCREASE_NUMBER_MATCHES,
   SHOW_CARD,
-  START_GAME,
+  UPDATA_CARDS,
   UPDATA_PASTIME,
   UPDATA_VERIFIABLE_CARD,
 } from './types';
 
-export function startGame(cardsArr) {
+export function updataCards(cardsArr) {
   return {
-    type: START_GAME,
+    type: UPDATA_CARDS,
     payload: cardsArr,
   };
 }
@@ -38,10 +38,10 @@ export function showCards(index) {
   };
 }
 
-export function disableCards(i, j) {
+export function disableCards(...arg) {
   return {
     type: DISABLE_CARDS,
-    payload: [i, j],
+    payload: arg,
   };
 }
 
@@ -57,10 +57,10 @@ export function enableAllCards() {
   };
 }
 
-export function hideCards(i, j) {
+export function hideCards(...arg) {
   return {
     type: HIDE_CARDS,
-    payload: [i, j],
+    payload: arg,
   };
 }
 

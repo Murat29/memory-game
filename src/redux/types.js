@@ -1,4 +1,4 @@
-export const START_GAME = 'START_GAME';
+export const UPDATA_CARDS = 'UPDATA_CARDS';
 export const UPDATA_PASTIME = 'UPDATA_PASTIME';
 export const UPDATA_VERIFIABLE_CARD = 'UPDATA_VERIFIABLE_CARD';
 export const SHOW_CARD = 'SHOW_CARD';

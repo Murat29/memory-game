@@ -1,8 +1,10 @@
 import { combineReducers } from 'redux';
 import { cardsReducer } from './cardsReducer';
-import { timeReducer } from './timeReducer';
+import { appReducer } from './appReducer';
+import { gameParamsReducer } from './gameParamsReducer';
 
 export const rootReducer = combineReducers({
   cards: cardsReducer,
-  timer: timeReducer,
+  app: appReducer,
+  gameParams: gameParamsReducer,
 });
