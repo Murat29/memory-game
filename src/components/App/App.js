@@ -11,16 +11,20 @@ import {
   enableAllCards,
   hideCards,
   increaseNumberMatches,
+  openResultPopup,
+  openWinPopup,
 } from '../../redux/actions';
 import { emojiArray } from '../../utils/constants';
 import { msToTime } from '../../utils/msToTime';
 import Card from '../Card/Card';
+import ResultPopup from '../ResultPopup/ResultPopup';
+import WinPopup from '../WinPopup/WinPopup';
 import './App.css';
 
 function App({
   cards,
   updataCards,
-  disabled,
+  disabledCards,
   pastTime,
   verifiableСard,
   numberMatches,
@@ -32,6 +36,8 @@ function App({
   enableAllCards,
   hideCards,
   increaseNumberMatches,
+  openResultPopup,
+  openWinPopup,
 }) {
   const [intervalTime, setIntervalTime] = React.useState(null);
   const [cardHideTimer, setCardHideTimer] = React.useState(null);
@@ -79,7 +85,7 @@ function App({
         updataVerifiableCard(null);
         if (numberMatches + 1 === emojiArray.length) {
           clearInterval(intervalTime);
-          console.log('Победа');
+          openWinPopup();
         }
       }
       // Если карточки разные
@@ -105,24 +111,30 @@ function App({
 
   return (
     <div className="app">
+      <h1 className="app__title">Игра "Память"</h1>
       <div className="app__cards-container">
         {cards.map((dataCard, i) => (
           <Card
             key={dataCard?.key || i}
             index={i}
             value={dataCard?.value || ''}
-            disabled={dataCard?.disabled || disabled || false}
+            disabled={dataCard?.disabled || disabledCards || false}
             show={dataCard?.show || false}
             handleCardClick={handleCardClick}
           />
         ))}
       </div>
       <div className="app__menu">
-        <button onClick={start} className="app__btn-start">
+        <button onClick={start} className="app__btn">
           Старт
         </button>
         <p className="app__timer">Таймер: {msToTime(pastTime)}</p>
+        <button onClick={() => openResultPopup()} className="app__btn">
+          Таблица результатов
+        </button>
       </div>
+      <ResultPopup />
+      <WinPopup />
     </div>
   );
 }
@@ -131,8 +143,8 @@ const mapStateToProps = (state) => ({
   cards: state.cards.cards,
   verifiableСard: state.gameParams.verifiableСard,
   numberMatches: state.gameParams.numberMatches,
-  disabled: state.app.disabled,
-  pastTime: state.app.pastTime,
+  disabledCards: state.app.disabledCards,
+  pastTime: state.timer.pastTime,
 });
 
 const mapDispatchToProps = {
@@ -145,6 +157,8 @@ const mapDispatchToProps = {
   enableAllCards,
   hideCards,
   increaseNumberMatches,
+  openResultPopup,
+  openWinPopup,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

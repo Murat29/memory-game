@@ -1,9 +1,14 @@
 import {
+  ADD_TO_RESULTS,
+  CLOSE_RESULT_POPUP,
+  CLOSE_WIN_POPUP,
   DISABLE_ALL_CARDS,
   DISABLE_CARDS,
   ENABLE_ALL_CARDS,
   HIDE_CARDS,
   INCREASE_NUMBER_MATCHES,
+  OPEN_RESULT_POPUP,
+  OPEN_WIN_POPUP,
   SHOW_CARD,
   UPDATA_CARDS,
   UPDATA_PASTIME,
@@ -67,5 +72,33 @@ export function hideCards(...arg) {
 export function increaseNumberMatches() {
   return {
     type: INCREASE_NUMBER_MATCHES,
+  };
+}
+
+export function addToResults(item) {
+  return {
+    type: ADD_TO_RESULTS,
+    payload: item,
+  };
+}
+
+export function openResultPopup() {
+  return {
+    type: OPEN_RESULT_POPUP,
+  };
+}
+export function closeResultPopup() {
+  return {
+    type: CLOSE_RESULT_POPUP,
+  };
+}
+export function openWinPopup() {
+  return {
+    type: OPEN_WIN_POPUP,
+  };
+}
+export function closeWinPopup() {
+  return {
+    type: CLOSE_WIN_POPUP,
   };
 }

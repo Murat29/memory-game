@@ -1,0 +1,23 @@
+.popup__resuls-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.popup__resul-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.popup__resul-name {
+  margin: 0;
+}
+
+.popup__resul-time {
+  margin: 0;
+}

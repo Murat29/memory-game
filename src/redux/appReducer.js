@@ -1,20 +1,37 @@
-import { UPDATA_PASTIME, DISABLE_ALL_CARDS, ENABLE_ALL_CARDS } from './types';
+import {
+  CLOSE_RESULT_POPUP,
+  CLOSE_WIN_POPUP,
+  DISABLE_ALL_CARDS,
+  ENABLE_ALL_CARDS,
+  OPEN_RESULT_POPUP,
+  OPEN_WIN_POPUP,
+} from './types';
 
 const initState = {
-  pastTime: '0',
   disabledCards: true,
+  isOpenResultPopup: false,
+  isOpenWinPopup: false,
 };
 
 export const appReducer = (state = initState, action) => {
   switch (action.type) {
-    case UPDATA_PASTIME:
-      return { ...state, pastTime: action.payload };
-
     case DISABLE_ALL_CARDS:
-      return { ...state, disabled: true };
+      return { ...state, disabledCards: true };
 
     case ENABLE_ALL_CARDS:
-      return { ...state, disabled: false };
+      return { ...state, disabledCards: false };
+
+    case OPEN_RESULT_POPUP:
+      return { ...state, isOpenResultPopup: true };
+
+    case CLOSE_RESULT_POPUP:
+      return { ...state, isOpenResultPopup: false };
+
+    case OPEN_WIN_POPUP:
+      return { ...state, isOpenWinPopup: true };
+
+    case CLOSE_WIN_POPUP:
+      return { ...state, isOpenWinPopup: false };
 
     default:
       return state;
