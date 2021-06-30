@@ -112,7 +112,6 @@ function App({
 
   return (
     <div className="app">
-      <h1 className="app__title">Игра "Память"</h1>
       <div className="app__cards-container">
         {cards.map((dataCard, i) => (
           <Card
@@ -126,6 +125,8 @@ function App({
         ))}
       </div>
       <div className="app__menu">
+        <h1 className="app__title">Игра "Память"</h1>
+
         <Button onClick={startGame} title="Старт" />
         <p className="app__timer">Таймер: {msToTime(pastTime)}</p>
         <Button onClick={() => openResultPopup()} title="Таблица результатов" />
