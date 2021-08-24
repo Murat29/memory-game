@@ -4,12 +4,14 @@ function Card({ value, disabled, index, handleCardClick, show }) {
   return (
     <button
       type="button"
-      disabled={disabled}
+      disabled={show || disabled}
       onClick={() => handleCardClick(value, index)}
       className={`card ${show && 'card_flip'}`}
     >
       <div className="card__shirt" />
-      <div className="card__face">{value}</div>
+      <div className="card__face" draggable="false">
+        {value}
+      </div>
     </button>
   );
 }
