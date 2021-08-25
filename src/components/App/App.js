@@ -1,19 +1,20 @@
 import React from 'react';
 import { nanoid } from 'nanoid';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
-  updataCards,
-  updataPastime,
-  updataVerifiableCard,
-  showCards,
-  disableCards,
+  showCard,
+  hideCards,
   disableAllCards,
   enableAllCards,
-  hideCards,
+  updataCards,
+} from '../../redux/cardsSlice';
+import { updataPastime } from '../../redux/timerSlice';
+import { openResultPopup, openWinPopup } from '../../redux/appSlice';
+import {
   increaseNumberMatches,
-  openResultPopup,
-  openWinPopup,
-} from '../../redux/actions';
+  updataVerifiableCard,
+  cleareGameParams,
+} from '../../redux/gameParamsSlice';
 import { emojiArray } from '../../utils/constants';
 import { msToTime } from '../../utils/msToTime';
 import Card from '../Card/Card';
@@ -22,35 +23,25 @@ import ResultPopup from '../ResultPopup/ResultPopup';
 import WinPopup from '../WinPopup/WinPopup';
 import './App.css';
 
-function App({
-  cards,
-  updataCards,
-  disabledCards,
-  pastTime,
-  verifiableСard,
-  numberMatches,
-  updataPastime,
-  updataVerifiableCard,
-  showCards,
-  disableCards,
-  disableAllCards,
-  enableAllCards,
-  hideCards,
-  increaseNumberMatches,
-  openResultPopup,
-  openWinPopup,
-}) {
+function App() {
   const [intervalTime, setIntervalTime] = React.useState(null);
   const [cardHideTimer, setCardHideTimer] = React.useState(null);
 
+  const cards = useSelector((state) => state.cards.cards);
+  const cardsDisabled = useSelector((state) => state.cards.cardsDisabled);
+  const pastTime = useSelector((state) => state.timer.pastTime);
+  const verifiableСard = useSelector((state) => state.gameParams.verifiableСard);
+  const numberMatches = useSelector((state) => state.gameParams.numberMatches);
+  const dispatch = useDispatch();
+
   function startGame() {
-    updataCards(getArrayToDraw(emojiArray));
-    enableAllCards();
+    dispatch(updataCards(getArrayToDraw(emojiArray)));
+    dispatch(enableAllCards());
     clearInterval(intervalTime);
-    updataPastime(0);
+    dispatch(updataPastime(0));
     const startDate = new Date();
     const newIntervalTime = setInterval(() => {
-      updataPastime(new Date() - startDate);
+      dispatch(updataPastime(new Date() - startDate));
     }, 1000);
     setIntervalTime(newIntervalTime);
   }
@@ -58,7 +49,6 @@ function App({
   function getArrayToDraw(arr) {
     const doubledArray = arr.concat(arr).map((value) => ({
       value,
-      disabled: false,
       show: false,
       // Создаем унакальные ключю, иначе карточки не будут перерендериться
       key: nanoid(),
@@ -76,35 +66,36 @@ function App({
 
   function handleCardClick(value, index) {
     clearTimeout(cardHideTimer);
-    showCards(index);
+    dispatch(showCard(index));
     // Если открываем вторую карточку
     if (verifiableСard) {
       // Если карточки одинаковые
       if (verifiableСard.value === value) {
-        increaseNumberMatches();
-        disableCards(index, verifiableСard.index);
-        updataVerifiableCard(null);
+        dispatch(increaseNumberMatches());
+        dispatch(updataVerifiableCard(null));
+        // Победа
         if (numberMatches + 1 === emojiArray.length) {
           clearInterval(intervalTime);
-          openWinPopup();
+          dispatch(openWinPopup());
+          dispatch(cleareGameParams());
         }
       }
       // Если карточки разные
       else {
-        disableAllCards();
+        dispatch(disableAllCards());
         setTimeout(() => {
-          hideCards(index, verifiableСard.index);
-          updataVerifiableCard(null);
-          enableAllCards();
+          dispatch(hideCards([index, verifiableСard.index]));
+          dispatch(updataVerifiableCard(null));
+          dispatch(enableAllCards());
         }, 700);
       }
     }
     // Если открываем первую карточку
     else {
-      updataVerifiableCard({ value, index });
+      dispatch(updataVerifiableCard({ value, index }));
       const newCardHideTimer = setTimeout(() => {
-        updataVerifiableCard(null);
-        hideCards(index);
+        dispatch(updataVerifiableCard(null));
+        dispatch(hideCards([index]));
       }, 5000);
       setCardHideTimer(newCardHideTimer);
     }
@@ -118,7 +109,7 @@ function App({
             key={dataCard?.key || i}
             index={i}
             value={dataCard?.value || ''}
-            disabled={dataCard?.disabled || disabledCards || false}
+            disabled={dataCard?.show || cardsDisabled}
             show={dataCard?.show || false}
             handleCardClick={handleCardClick}
           />
@@ -129,7 +120,7 @@ function App({
 
         <Button onClick={startGame} title="Старт" />
         <p className="app__timer">Таймер: {msToTime(pastTime)}</p>
-        <Button onClick={() => openResultPopup()} title="Таблица результатов" />
+        <Button onClick={() => dispatch(openResultPopup())} title="Таблица результатов" />
       </div>
       <ResultPopup />
       <WinPopup />
@@ -137,26 +128,4 @@ function App({
   );
 }
 
-const mapStateToProps = (state) => ({
-  cards: state.cards.cards,
-  verifiableСard: state.gameParams.verifiableСard,
-  numberMatches: state.gameParams.numberMatches,
-  disabledCards: state.app.disabledCards,
-  pastTime: state.timer.pastTime,
-});
-
-const mapDispatchToProps = {
-  updataCards,
-  updataPastime,
-  updataVerifiableCard,
-  showCards,
-  disableCards,
-  disableAllCards,
-  enableAllCards,
-  hideCards,
-  increaseNumberMatches,
-  openResultPopup,
-  openWinPopup,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;

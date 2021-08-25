@@ -1,12 +1,20 @@
-import { connect } from 'react-redux';
 import Popup from '../Popup/Popup';
+import { useSelector, useDispatch } from 'react-redux';
+import { closeResultPopup } from '../../redux/appSlice';
 import { msToTime } from '../../utils/msToTime';
 import './ResultPopup.css';
-import { closeResultPopup } from '../../redux/actions';
 
-function ResultPopup({ results, isOpenResultPopup, closeResultPopup }) {
+function ResultPopup() {
+  const isOpenResultPopup = useSelector((state) => state.app.isOpenResultPopup);
+  const results = useSelector((state) => state.results.results);
+  const dispatch = useDispatch();
+
+  function closePopup() {
+    dispatch(closeResultPopup());
+  }
+
   return (
-    <Popup title="Таблица результатов" isOpen={isOpenResultPopup} close={closeResultPopup}>
+    <Popup title="Таблица результатов" isOpen={isOpenResultPopup} close={closePopup}>
       <ul className="popup__resuls-list">
         {results.map((data, i) => (
           <div key={i} className="popup__resul-item">
@@ -18,13 +26,5 @@ function ResultPopup({ results, isOpenResultPopup, closeResultPopup }) {
     </Popup>
   );
 }
-const mapStateToProps = (state) => ({
-  results: state.results.results,
-  isOpenResultPopup: state.app.isOpenResultPopup,
-});
 
-const mapDispatchToProps = {
-  closeResultPopup,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ResultPopup);
+export default ResultPopup;

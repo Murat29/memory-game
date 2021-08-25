@@ -1,24 +1,34 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Popup from '../Popup/Popup';
 import Button from '../Button/Button';
-import { closeWinPopup, addToResults, openResultPopup } from '../../redux/actions';
+import { openResultPopup, closeWinPopup } from '../../redux/appSlice';
+import { addToResults } from '../../redux/resultsSlice';
 import { msToTime } from '../../utils/msToTime';
 import './WinPopup.css';
 
-function WinPopup({ isOpenWinPopup, closeWinPopup, pastTime, addToResults, openResultPopup }) {
+function WinPopup() {
   const [name, setName] = React.useState('');
+
+  const isOpenWinPopup = useSelector((state) => state.app.isOpenWinPopup);
+  const pastTime = useSelector((state) => state.timer.pastTime);
+  const dispatch = useDispatch();
 
   function handleClick() {
     if (name.trim()) {
-      addToResults({ name, time: pastTime });
-      closeWinPopup();
-      openResultPopup();
+      dispatch(addToResults({ name, time: pastTime }));
+      closePopup();
+      dispatch(openResultPopup());
       setName('');
     }
   }
+
+  function closePopup() {
+    dispatch(closeWinPopup());
+  }
+
   return (
-    <Popup title="Поздравляю, вы победили" isOpen={isOpenWinPopup} close={closeWinPopup}>
+    <Popup title="Поздравляю, вы победили" isOpen={isOpenWinPopup} close={closePopup}>
       <p className="popup__text">Ваш результат: {msToTime(pastTime)}</p>
       <input
         value={name}
@@ -31,15 +41,5 @@ function WinPopup({ isOpenWinPopup, closeWinPopup, pastTime, addToResults, openR
     </Popup>
   );
 }
-const mapStateToProps = (state) => ({
-  isOpenWinPopup: state.app.isOpenWinPopup,
-  pastTime: state.timer.pastTime,
-});
 
-const mapDispatchToProps = {
-  closeWinPopup,
-  addToResults,
-  openResultPopup,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(WinPopup);
+export default WinPopup;
